@@ -30,7 +30,6 @@ fun exec(ignoreExitCode: Boolean = false, block: ExecBuilder.() -> Unit): String
       val errThread = Thread.startVirtualThread {
         err = errorStream.bufferedReader().readText().trim()
       }
-      errThread.start()
 
       val out = inputStream.bufferedReader().readText().trim()
       errThread.join()
