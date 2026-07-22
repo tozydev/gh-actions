@@ -1,0 +1,62 @@
+name: CalVer Release Composite Action
+description: Automatically calculates CalVer release versions, updates files, commits, tags, creates GitHub releases with artifacts.
+
+inputs:
+  major:
+    description: Major version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
+    required: false
+    default: yyyy
+  minor:
+    description: Minor version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
+    required: false
+    default: MM
+  micro:
+    description: Micro version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
+    required: false
+    default: patch
+  tag-prefix:
+    description: Prefix added to the tag (e.g. v).
+    required: false
+    default: "v"
+  extra-files:
+    description: Newline or comma separated file paths to bump version in.
+    required: false
+    default: ""
+  artifacts:
+    description: Newline or comma separated artifact file paths to upload to the release.
+    required: false
+    default: ""
+  commit-message:
+    description: Commit message for version bump.
+    required: false
+    default: "chore(release): {tag} [skip ci]"
+  github-token:
+    description: GitHub Token for authenticating gh CLI release creation.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  version:
+    description: The calculated version without prefix.
+    value: "${{ steps.calver.outputs.version }}"
+  tag:
+    description: The full tag name including prefix.
+    value: "${{ steps.calver.outputs.tag }}"
+
+runs:
+  using: composite
+  steps:
+    - id: calver
+      shell: bash
+      env:
+        INPUT_MAJOR: ${{ inputs.major }}
+        INPUT_MINOR: ${{ inputs.minor }}
+        INPUT_MICRO: ${{ inputs.micro }}
+        INPUT_TAG_PREFIX: ${{ inputs.tag-prefix }}
+        INPUT_EXTRA_FILES: ${{ inputs.extra-files }}
+        INPUT_ARTIFACTS: ${{ inputs.artifacts }}
+        INPUT_COMMIT_MESSAGE: ${{ inputs.commit-message }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: |
+        chmod +x "${{ github.action_path }}/action.main.kts"
+        "${{ github.action_path }}/action.main.kts"
