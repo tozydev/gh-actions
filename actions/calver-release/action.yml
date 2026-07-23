@@ -6,34 +6,48 @@ inputs:
     description: Major version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
     required: false
     default: yyyy
+
   minor:
     description: Minor version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
     required: false
-    default: MM
+    default: M
   micro:
     description: Micro version format. Can accept a Java Date format pattern or 'patch' for incremental counter.
     required: false
     default: patch
+
   tag-prefix:
     description: Prefix added to the tag (e.g. v).
     required: false
     default: "v"
+
   extra-files:
-    description: Newline or comma separated file paths to bump version in.
+    description: Newline separated file paths to bump version in.
     required: false
     default: ""
+
   artifacts:
-    description: Newline or comma separated artifact file paths to upload to the release.
+    description: Newline separated artifact file paths to upload to the release.
     required: false
     default: ""
+
   commit-message:
     description: Commit message for version bump.
     required: false
     default: "chore(release): {tag} [skip ci]"
+
   github-token:
-    description: GitHub Token for authenticating gh CLI release creation.
+    description: GitHub Token for authentication.
     required: false
     default: ${{ github.token }}
+
+  app-client-id:
+    description: GitHub App Client ID for authentication.
+    required: false
+
+  app-private-key:
+    description: GitHub App Private Key for authentication.
+    required: false
 
 outputs:
   version:
@@ -46,17 +60,84 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: calver
+    - name: Create GitHub App Token
+      id: app-token
+      if: inputs.app-client-id != '' && inputs.app-private-key != ''
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ inputs.app-client-id }}
+        private-key: ${{ inputs.app-private-key }}
+
+    - name: Determine GitHub Token
+      id: determine-token
+      shell: bash
+      # language=bash
+      run: |
+        if [[ "${{ inputs.app-client-id }}" != "" && "${{ inputs.app-private-key }}" != "" ]]; then
+          echo "token=${{ steps.app-token.outputs.token }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "token=${{ inputs.github-token }}" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+        token: ${{ steps.determine-token.outputs.token }}
+
+    - name: Calculate CalVer Version
+      id: calver
       shell: bash
       env:
         INPUT_MAJOR: ${{ inputs.major }}
         INPUT_MINOR: ${{ inputs.minor }}
         INPUT_MICRO: ${{ inputs.micro }}
         INPUT_TAG_PREFIX: ${{ inputs.tag-prefix }}
-        INPUT_EXTRA_FILES: ${{ inputs.extra-files }}
-        INPUT_ARTIFACTS: ${{ inputs.artifacts }}
-        INPUT_COMMIT_MESSAGE: ${{ inputs.commit-message }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+      # language=bash
       run: |
-        chmod +x "${{ github.action_path }}/action.main.kts"
-        "${{ github.action_path }}/action.main.kts"
+        chmod +x "${{ github.action_path }}/calculate-calver.main.kts"
+        "${{ github.action_path }}/calculate-calver.main.kts"
+
+    - name: Replace Extra Files Version
+      id: replace-extra-files
+      shell: bash
+      if: inputs.extra-files != ''
+      env:
+        INPUT_VERSION: ${{ steps.calver.outputs.version }}
+        INPUT_EXTRA_FILES: ${{ inputs.extra-files }}
+      # language=bash
+      run: |
+        chmod +x "${{ github.action_path }}/replace-extra-files.main.kts"
+        "${{ github.action_path }}/replace-extra-files.main.kts"
+
+    - name: Commit Version Changes
+      id: commit
+      shell: bash
+      if: inputs.extra-files != '' && steps.replace-extra-files.outputs.modified-files != ''
+      env:
+        COMMIT_FILES: ${{ steps.replace-extra-files.outputs.modified-files }}
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+        GITHUB_TOKEN: ${{ steps.determine-token.outputs.token }}
+      # language=bash
+      run: |
+        FORMATTED_MSG=$(echo "${{ inputs.commit-message }}" | sed "s/{tag}/${{ steps.calver.outputs.tag }}/g" | sed "s/{version}/${{ steps.calver.outputs.version }}/g")
+        export COMMIT_MESSAGE="$FORMATTED_MSG"
+        chmod +x "${{ github.action_path }}/commit.main.kts"
+        KOTLIN_BIN=$(dirname "$(realpath "$(which kotlinc)")")
+        KOTLIN_HOME=$(dirname $KOTLIN_BIN)
+        kotlinc -Xplugin=$KOTLIN_HOME/lib/kotlin-serialization-compiler-plugin.jar -script "${{ github.action_path }}/commit.main.kts"
+
+    - name: Create GitHub Release
+      id: create-release
+      shell: bash
+      env:
+        INPUT_TAG: ${{ steps.calver.outputs.tag }}
+        INPUT_VERSION: ${{ steps.calver.outputs.version }}
+        TARGET_SHA: ${{ steps.commit.outputs.commit-sha || github.sha }}
+        INPUT_ARTIFACTS: ${{ inputs.artifacts }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_TOKEN: ${{ steps.determine-token.outputs.token }}
+      # language=bash
+      run: |
+        chmod +x "${{ github.action_path }}/release.main.kts"
+        "${{ github.action_path }}/release.main.kts"
