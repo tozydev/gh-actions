@@ -12,6 +12,9 @@ fun env(name: String): String =
       "❌ Missing $name environment variable."
     }
 
+fun envOrDefault(name: String, defaultValue: String): String =
+    System.getenv(name)?.takeIf { it.isNotBlank() } ?: defaultValue
+
 private val githubOutputPath = Path(env("GITHUB_OUTPUT"))
 
 fun setOutput(name: String, value: String) {
@@ -20,7 +23,7 @@ fun setOutput(name: String, value: String) {
 
 fun main() {
   val newVersion = env("INPUT_VERSION")
-  val filesInput = System.getenv("INPUT_EXTRA_FILES") ?: ""
+  val filesInput = envOrDefault("INPUT_EXTRA_FILES", "")
 
   val files = filesInput.split(Regex("[\\r\\n]+")).map { it.trim() }.filter { it.isNotEmpty() }
   val modifiedFiles = mutableListOf<String>()

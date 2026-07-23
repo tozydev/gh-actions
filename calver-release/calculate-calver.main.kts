@@ -54,6 +54,7 @@ fun fetchExistingTags(): List<String> {
 fun calculateNextMicroVersion(
     existingTags: List<String>,
     prefix: String,
+    modifier: String,
     major: String,
     minor: String,
 ): Int {
@@ -61,8 +62,8 @@ fun calculateNextMicroVersion(
   var maxMicro = -1
 
   for (tag in existingTags) {
-    if (tag.startsWith(prefixAndPeriod)) {
-      val microPart = tag.substringAfter(prefixAndPeriod)
+    if (tag.startsWith(prefixAndPeriod) && (modifier.isEmpty() || tag.endsWith(modifier))) {
+      val microPart = tag.substring(prefixAndPeriod.length, tag.length - modifier.length)
       val microVal = microPart.toIntOrNull()
       if (microVal != null && microVal > maxMicro) {
         maxMicro = microVal
@@ -77,6 +78,7 @@ fun main() {
   val minorFormat = envOrDefault("INPUT_MINOR", "MM")
   val microFormat = envOrDefault("INPUT_MICRO", "patch")
   val tagPrefix = envOrDefault("INPUT_TAG_PREFIX", "v")
+  val modifier = envOrDefault("INPUT_MODIFIER", "")
 
   val now: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
@@ -90,12 +92,13 @@ fun main() {
 
   val microVersion =
       if (isMicroPatch) {
-        calculateNextMicroVersion(existingTags, tagPrefix, majorVersion, minorVersion).toString()
+        calculateNextMicroVersion(existingTags, tagPrefix, modifier, majorVersion, minorVersion).toString()
       } else {
         formatCalverPart(microFormat, now)
       }
 
-  val versionStr = "$majorVersion.$minorVersion.$microVersion"
+  val baseVersion = "$majorVersion.$minorVersion.$microVersion"
+  val versionStr = "$baseVersion$modifier"
   val fullTag = "$tagPrefix$versionStr"
 
   println("🔢 Calculated CalVer Version: $versionStr")

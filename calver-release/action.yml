@@ -21,6 +21,16 @@ inputs:
     required: false
     default: "v"
 
+  modifier:
+    description: Modifier added to the version and tag (e.g. -alpha or dev).
+    required: false
+    default: ""
+
+  prerelease:
+    description: Whether to mark the GitHub release as a prerelease.
+    required: false
+    default: "false"
+
   extra-files:
     description: Newline separated file paths to bump version in.
     required: false
@@ -93,6 +103,7 @@ runs:
         INPUT_MINOR: ${{ inputs.minor }}
         INPUT_MICRO: ${{ inputs.micro }}
         INPUT_TAG_PREFIX: ${{ inputs.tag-prefix }}
+        INPUT_MODIFIER: ${{ inputs.modifier }}
       # language=bash
       run: |
         chmod +x "${{ github.action_path }}/calculate-calver.main.kts"
@@ -135,6 +146,7 @@ runs:
         INPUT_VERSION: ${{ steps.calver.outputs.version }}
         TARGET_SHA: ${{ steps.commit.outputs.commit-sha || github.sha }}
         INPUT_ARTIFACTS: ${{ inputs.artifacts }}
+        INPUT_PRERELEASE: ${{ inputs.prerelease }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_TOKEN: ${{ steps.determine-token.outputs.token }}
       # language=bash

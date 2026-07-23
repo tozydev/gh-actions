@@ -18,12 +18,15 @@ fun env(name: String): String =
       "❌ Missing $name environment variable."
     }
 
+fun envOrDefault(name: String, defaultValue: String): String =
+    System.getenv(name)?.takeIf { it.isNotBlank() } ?: defaultValue
+
 fun main() {
   val tag = env("INPUT_TAG")
   val version = env("INPUT_VERSION")
   val targetSha = env("TARGET_SHA")
   val repo = env("GITHUB_REPOSITORY")
-  val artifactsRaw = System.getenv("INPUT_ARTIFACTS") ?: ""
+  val artifactsRaw = envOrDefault("INPUT_ARTIFACTS", "")
 
   val artifactPaths =
       artifactsRaw
@@ -31,6 +34,8 @@ fun main() {
           .map { it.trim() }
           .filter { it.isNotEmpty() }
           .filter { Path(it).exists() }
+
+  val isPrerelease = envOrDefault("INPUT_PRERELEASE", "false").toBoolean()
 
   val ghArgs =
       mutableListOf(
@@ -45,6 +50,9 @@ fun main() {
           "--title",
           version,
       )
+  if (isPrerelease) {
+    ghArgs.add("--prerelease")
+  }
   ghArgs.addAll(artifactPaths)
 
   executeCommand("gh", *ghArgs.toTypedArray())
