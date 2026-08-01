@@ -4,7 +4,7 @@ A reusable GitHub Actions workflow (`shared-gradle-build.yml`) that sets up Java
 
 ## ✨ Features
 
-- ☕ **JDK & Gradle Setup**: Invokes [`tozydev/gh-actions/setup-gradle`](../setup-gradle) action to configure JDK (default: Java `25` `jetbrains`) and Gradle with build caching.
+- ☕ **JDK & Gradle Setup**: Invokes [`tozydev/gh-actions/setup-gradle`](../../setup-gradle) action to configure JDK (default: Java `25` `jetbrains`) and Gradle with build caching.
 - 🛠️ **Flexible Execution**: Accepts `gradle-args` (e.g. `build check --info`) or a custom `build-script`. If `build-script` is provided, it executes the custom script instead of `./gradlew <gradle-args>`.
 - 🔐 **Keystore Decoding**: Supports base64 keystore decoding via secrets.
 - 🗄️ **Kotlin/JS Caching**: Supports Yarn/NPM dependency caching for Kotlin/JS projects.
@@ -68,4 +68,4 @@ jobs:
 
 ## 📄 License
 
-This project is licensed under the Apache License 2.0 — see the [LICENSE](../LICENSE) file for details.
+This project is licensed under the Apache License 2.0 — see the [LICENSE](../../LICENSE) file for details.

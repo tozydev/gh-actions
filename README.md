@@ -14,7 +14,7 @@ own projects and contribute back if you have improvements or new ideas.
 
 | Workflow                                         | Description                                                                                                                            |
 |:-------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
-| [**Shared Gradle Build**](./shared-gradle-build) | Reusable workflow to set up Java & Gradle, decode keystores, execute Gradle tasks or custom build scripts, and upload build artifacts. |
+| [**Shared Gradle Build**](./.github/workflows/shared-gradle-build.md) | Reusable workflow to set up Java & Gradle, decode keystores, execute Gradle tasks or custom build scripts, and upload build artifacts. |
 
 ## 📄 License
 
