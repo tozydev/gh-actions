@@ -106,8 +106,8 @@ runs:
         INPUT_MODIFIER: ${{ inputs.modifier }}
       # language=bash
       run: |
-        chmod +x "${{ github.action_path }}/calculate-calver.main.kts"
-        "${{ github.action_path }}/calculate-calver.main.kts"
+        chmod +x "${{ github.action_path }}/scripts/calculate-calver.main.kts"
+        "${{ github.action_path }}/scripts/calculate-calver.main.kts"
 
     - name: Replace Extra Files Version
       id: replace-extra-files
@@ -118,8 +118,8 @@ runs:
         INPUT_EXTRA_FILES: ${{ inputs.extra-files }}
       # language=bash
       run: |
-        chmod +x "${{ github.action_path }}/replace-extra-files.main.kts"
-        "${{ github.action_path }}/replace-extra-files.main.kts"
+        chmod +x "${{ github.action_path }}/scripts/replace-extra-files.main.kts"
+        "${{ github.action_path }}/scripts/replace-extra-files.main.kts"
 
     - name: Commit Version Changes
       id: commit
@@ -133,10 +133,10 @@ runs:
       run: |
         FORMATTED_MSG=$(echo "${{ inputs.commit-message }}" | sed "s/{tag}/${{ steps.calver.outputs.tag }}/g" | sed "s/{version}/${{ steps.calver.outputs.version }}/g")
         export COMMIT_MESSAGE="$FORMATTED_MSG"
-        chmod +x "${{ github.action_path }}/commit.main.kts"
+        chmod +x "${{ github.action_path }}/scripts/commit.main.kts"
         KOTLIN_BIN=$(dirname "$(realpath "$(which kotlinc)")")
         KOTLIN_HOME=$(dirname $KOTLIN_BIN)
-        kotlinc -Xplugin=$KOTLIN_HOME/lib/kotlin-serialization-compiler-plugin.jar -script "${{ github.action_path }}/commit.main.kts"
+        kotlinc -Xplugin=$KOTLIN_HOME/lib/kotlin-serialization-compiler-plugin.jar -script "${{ github.action_path }}/scripts/commit.main.kts"
 
     - name: Create GitHub Release
       id: create-release
@@ -151,5 +151,5 @@ runs:
         GITHUB_TOKEN: ${{ steps.determine-token.outputs.token }}
       # language=bash
       run: |
-        chmod +x "${{ github.action_path }}/release.main.kts"
-        "${{ github.action_path }}/release.main.kts"
+        chmod +x "${{ github.action_path }}/scripts/release.main.kts"
+        "${{ github.action_path }}/scripts/release.main.kts"
