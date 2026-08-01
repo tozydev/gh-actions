@@ -8,6 +8,7 @@ own projects and contribute back if you have improvements or new ideas.
 | Action                                 | Description                                                                                                                                                                    |
 |:---------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [**CalVer Release**](./calver-release) | Automatically calculates Calendar Versioning (CalVer) releases, updates files, commits changes, creates git tags, and publishes GitHub releases with optional build artifacts. |
+| [**Setup Gradle**](./setup-gradle)     | Sets up Java JDK (default JDK 25 JetBrains), Gradle with build caching, gradlew executable permissions, keystore decoding, and Kotlin/JS dependency caching.                   |
 
 ## 📄 License
 

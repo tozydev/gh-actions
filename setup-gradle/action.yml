@@ -1,0 +1,97 @@
+name: Setup Gradle Composite Action
+description: Setups JDK, Gradle with caching, grants executable permissions to gradlew, decodes keystore, and caches Kotlin/JS dependencies if present.
+
+inputs:
+  java-version:
+    description: Java JDK version to setup.
+    required: false
+    default: "25"
+
+  java-distribution:
+    description: Java JDK distribution vendor.
+    required: false
+    default: jetbrains
+
+  github-token:
+    description: GitHub Token for authentication (e.g. actions/setup-java).
+    required: false
+    default: ${{ github.token }}
+
+  keystore-base64:
+    description: Base64-encoded keystore file string to decode.
+    required: false
+    default: ""
+
+  keystore-path:
+    description: Output path to save the decoded keystore file.
+    required: false
+    default: ${{ runner.temp }}/release.keystore
+
+  kotlin-js-cache:
+    description: Package manager cache type for Kotlin/JS build (empty/disabled, 'npm', or 'yarn').
+    required: false
+    default: ""
+
+  kotlin-js-cache-dependency-path:
+    description: Glob pattern or path to Kotlin/JS lockfiles for cache hashing.
+    required: false
+    default: .kotlin-locks/**/package-lock.json
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java JDK
+      uses: actions/setup-java@v5
+      with:
+        distribution: ${{ inputs.java-distribution }}
+        java-version: ${{ inputs.java-version }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v6
+
+    - name: Get Package Manager Cache Dir
+      id: pkg-mgr-cache
+      if: inputs.kotlin-js-cache != ''
+      shell: bash
+      # language=bash
+      run: |
+        cache_type="${{ inputs.kotlin-js-cache }}"
+        if [ "$cache_type" = "yarn" ]; then
+          cache_dir=$(yarn cache dir 2>/dev/null || echo "~/.gradle/caches/yarn")
+        elif [ "$cache_type" = "npm" ]; then
+          cache_dir=$(npm config get cache 2>/dev/null || echo "~/.npm")
+        else
+          cache_dir=""
+        fi
+        echo "dir=$cache_dir" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Kotlin/JS Dependencies
+      if: inputs.kotlin-js-cache != ''
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.pkg-mgr-cache.outputs.dir }}
+        key: ${{ runner.os }}-kotlin-js-${{ inputs.kotlin-js-cache }}-${{ hashFiles(inputs.kotlin-js-cache-dependency-path) }}
+        restore-keys: |
+          ${{ runner.os }}-kotlin-js-${{ inputs.kotlin-js-cache }}-
+          ${{ runner.os }}-kotlin-js-
+
+    - name: Grant gradlew execute permission
+      shell: bash
+      # language=bash
+      run: |
+        if [ -f "./gradlew" ]; then
+          chmod +x ./gradlew
+        fi
+
+    - name: Decode Keystore File
+      shell: bash
+      if: inputs.keystore-base64 != ''
+      env:
+        ENCODED_KEYSTORE: ${{ inputs.keystore-base64 }}
+        KEYSTORE_DEST: ${{ inputs.keystore-path }}
+      # language=bash
+      run: |
+        mkdir -p "$(dirname "$KEYSTORE_DEST")"
+        echo "$ENCODED_KEYSTORE" | base64 -d > "$KEYSTORE_DEST"
