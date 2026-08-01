@@ -5,14 +5,13 @@ A reusable composite GitHub Action to set up Java (JDK), Gradle (with caching), 
 
 ## ✨ Features
 
-- ☕ **JDK Setup**: Powered by [`actions/setup-java@v5`](https://github.com/actions/setup-java).
-- 🐘 **Gradle Setup**: Powered by [`gradle/actions/setup-gradle@v6`](https://github.com/gradle/actions). Automatic Gradle
+- **JDK Setup**: Powered by [`actions/setup-java`](https://github.com/actions/setup-java).
+- **Gradle Setup**: Powered by [`gradle/actions/setup-gradle`](https://github.com/gradle/actions). Automatic Gradle
   build caching and configuration.
-- 🔑 **Gradle Executable Permission**: Automatically runs `chmod +x ./gradlew` if `./gradlew` exists.
-- 🔐 **Keystore Decoding**: Safely decodes base64-encoded keystore secrets to a specified runner temp path for signing
+- **Gradle Executable Permission**: Automatically runs `chmod +x ./gradlew` if `./gradlew` exists.
+- **Keystore Decoding**: Safely decodes base64-encoded keystore secrets to a specified runner temp path for signing
   Android apps or other purposes.
-- 🗄️ **Kotlin/JS Cache**: Optional cache step for Kotlin/JS build dependencies using `kotlin-js-cache` (`yarn` or
-  `npm`).
+- **Kotlin/JS Cache**: Optional cache step for Kotlin/JS build dependencies using `kotlin-js-cache` (`yarn` or `npm`).
 
 ## 🚀 Usage
 
@@ -22,7 +21,7 @@ steps:
     uses: actions/checkout@v6
 
   - name: Setup Java & Gradle
-    uses: tozydev/gh-actions/setup-gradle@v1
+    uses: tozydev/gh-actions/setup-gradle@main
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
