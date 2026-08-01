@@ -1,0 +1,105 @@
+name: Shared Gradle Build
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: Java JDK version to setup.
+        required: false
+        type: string
+        default: "25"
+
+      java-distribution:
+        description: Java JDK distribution vendor.
+        required: false
+        type: string
+        default: jetbrains
+
+      gradle-args:
+        description: Gradle task(s) and CLI arguments to execute.
+        required: false
+        type: string
+        default: build
+
+      build-script:
+        description: Custom shell script to run instead of ./gradlew <gradle-args>.
+        required: false
+        type: string
+        default: ""
+
+      keystore-path:
+        description: Destination path for decoded keystore file.
+        required: false
+        type: string
+        default: ${{ runner.temp }}/release.keystore
+
+      kotlin-js-cache:
+        description: Package manager cache type for Kotlin/JS build ('', 'yarn', or 'npm').
+        required: false
+        type: string
+        default: ""
+
+      kotlin-js-cache-dependency-path:
+        description: Glob pattern or path to Kotlin/JS lockfiles for cache hashing.
+        required: false
+        type: string
+        default: .kotlin-locks/**/package-lock.json
+
+      upload-artifacts-path:
+        description: Newline-separated paths or glob patterns of artifacts to upload.
+        required: false
+        type: string
+        default: ""
+
+      upload-artifacts-name:
+        description: Name for the uploaded artifact.
+        required: false
+        type: string
+        default: build-artifacts
+
+    secrets:
+      github-token:
+        description: GitHub token for authentication.
+        required: false
+      keystore-base64:
+        description: Base64-encoded keystore secret string.
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Gradle
+        uses: tozydev/gh-actions/setup-gradle@main
+        with:
+          java-version: ${{ inputs.java-version }}
+          java-distribution: ${{ inputs.java-distribution }}
+          github-token: ${{ secrets.github-token || github.token }}
+          keystore-base64: ${{ secrets.keystore-base64 }}
+          keystore-path: ${{ inputs.keystore-path }}
+          kotlin-js-cache: ${{ inputs.kotlin-js-cache }}
+          kotlin-js-cache-dependency-path: ${{ inputs.kotlin-js-cache-dependency-path }}
+
+      - name: Run Gradle Build Script
+        if: inputs.build-script != ''
+        shell: bash
+        # language=bash
+        run: |
+          ${{ inputs.build-script }}
+
+      - name: Run Gradle Build Tasks
+        if: inputs.build-script == ''
+        shell: bash
+        # language=bash
+        run: |
+          ./gradlew ${{ inputs.gradle-args }}
+
+      - name: Upload Build Artifacts
+        if: inputs.upload-artifacts-path != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.upload-artifacts-name }}
+          path: ${{ inputs.upload-artifacts-path }}
