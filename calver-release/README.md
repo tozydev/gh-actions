@@ -40,7 +40,7 @@ A GitHub Composite Action that automatically makes GitHub release using Calendar
 
 ```yaml
 - name: CalVer Release
-  uses: tozydev/gh-actions/calver-release@main
+  uses: tozydev/gh-actions/calver-release@v1
 ```
 
 For a complete workflow setup, see

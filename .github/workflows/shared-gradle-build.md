@@ -28,7 +28,7 @@ on:
 
 jobs:
   build:
-    uses: tozydev/gh-actions/.github/workflows/shared-gradle-build.yml@main
+    uses: tozydev/gh-actions/.github/workflows/shared-gradle-build.yml@v1
     with:
       gradle-args: 'build check'
       upload-artifacts-path: 'build/libs/*.jar'
@@ -42,7 +42,7 @@ Using a custom `build-script`:
 ```yaml
 jobs:
   build:
-    uses: tozydev/gh-actions/.github/workflows/shared-gradle-build.yml@main
+    uses: tozydev/gh-actions/.github/workflows/shared-gradle-build.yml@v1
     with:
       build-script: |
         ./gradlew assemble

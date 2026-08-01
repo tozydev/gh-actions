@@ -21,7 +21,7 @@ steps:
     uses: actions/checkout@v6
 
   - name: Setup Java & Gradle
-    uses: tozydev/gh-actions/setup-gradle@main
+    uses: tozydev/gh-actions/setup-gradle@v1
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
