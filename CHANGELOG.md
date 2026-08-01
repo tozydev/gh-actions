@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/tozydev/gh-actions/compare/v1.0.0...v1.0.1) (2026-08-01)
+
+
+### Bug Fixes
+
+* **deps:** update actions/checkout action to v7 ([#3](https://github.com/tozydev/gh-actions/issues/3)) ([d02cda4](https://github.com/tozydev/gh-actions/commit/d02cda434314ad0541320632de8fd3ac8d6aabd3))
+
 ## 1.0.0 (2026-08-01)
 
 
