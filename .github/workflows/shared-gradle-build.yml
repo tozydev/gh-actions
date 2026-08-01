@@ -28,10 +28,10 @@ on:
         default: ""
 
       keystore-path:
-        description: Destination path for decoded keystore file.
+        description: Destination path for decoded keystore file (defaults to runner.temp/release.keystore if empty).
         required: false
         type: string
-        default: ${{ runner.temp }}/release.keystore
+        default: ""
 
       kotlin-js-cache:
         description: Package manager cache type for Kotlin/JS build ('', 'yarn', or 'npm').
@@ -79,7 +79,7 @@ jobs:
           java-distribution: ${{ inputs.java-distribution }}
           github-token: ${{ secrets.github-token || github.token }}
           keystore-base64: ${{ secrets.keystore-base64 }}
-          keystore-path: ${{ inputs.keystore-path }}
+          keystore-path: ${{ inputs.keystore-path || format('{0}/release.keystore', runner.temp) }}
           kotlin-js-cache: ${{ inputs.kotlin-js-cache }}
           kotlin-js-cache-dependency-path: ${{ inputs.kotlin-js-cache-dependency-path }}
 
