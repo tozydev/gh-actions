@@ -1,0 +1,18 @@
+# Changelog
+
+## 1.0.0 (2026-08-01)
+
+
+### Features
+
+* add setup-gradle composite action ([d1fb07a](https://github.com/tozydev/gh-actions/commit/d1fb07aad7c2d96ec84ab5e4f1ef9d75cc666cb3))
+* add shared-gradle-build reusable workflow ([2b59d2f](https://github.com/tozydev/gh-actions/commit/2b59d2f74ab7475e091166ccfabf25bfa5bbdeff))
+* calver-release composite action ([50c9b45](https://github.com/tozydev/gh-actions/commit/50c9b459e5728357496108219b7276e0602918bf))
+* **calver-release:** add modifier and prerelease options ([1ea1b4d](https://github.com/tozydev/gh-actions/commit/1ea1b4d466a88e8388fe521d5e4d454f600e23d6))
+* new calver release action ([ad3043d](https://github.com/tozydev/gh-actions/commit/ad3043dc859c172066985a39caa83227f006565a))
+
+
+### Bug Fixes
+
+* remove invalid runner context expression in workflow inputs default ([2406bf1](https://github.com/tozydev/gh-actions/commit/2406bf174139cf885b872449a9ab32cf407de949))
+* start already started thread ([4933dc8](https://github.com/tozydev/gh-actions/commit/4933dc8100c7d32af7e4cdb682170e30e515f3ad))
