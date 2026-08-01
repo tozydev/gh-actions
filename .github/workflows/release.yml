@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: release
+  cancel-in-progress: true
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Update Floating Major Tag
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          MAJOR_TAG: v${{ steps.release.outputs.major }}
+          TARGET_SHA: ${{ steps.release.outputs.sha }}
+        # language=bash
+        run: |
+          # Update or create the major floating tag (e.g. v1) pointing to the release SHA
+          gh api -X POST "repos/${{ github.repository }}/git/refs" \
+            -f ref="refs/tags/${MAJOR_TAG}" \
+            -f sha="${TARGET_SHA}" \
+            2>/dev/null || \
+          gh api -X PATCH "repos/${{ github.repository }}/git/refs/tags/${MAJOR_TAG}" \
+            -f sha="${TARGET_SHA}" \
+            -F force=true
