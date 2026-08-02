@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/tozydev/gh-actions/compare/v1.2.1...v1.2.2) (2026-08-02)
+
+
+### Bug Fixes
+
+* **shared-gradle-build:** apply env-vars for build step only ([a72f262](https://github.com/tozydev/gh-actions/commit/a72f262c12e02e706035c6627838e42c7f9ff2d8))
+* **shared-gradle-build:** update setup-gradle action version to v1 ([c63bf3a](https://github.com/tozydev/gh-actions/commit/c63bf3a43beb20de982c9ee815ea89a99458652e))
+
 ## [1.2.1](https://github.com/tozydev/gh-actions/compare/v1.2.0...v1.2.1) (2026-08-02)
 
 
