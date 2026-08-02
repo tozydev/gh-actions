@@ -96,9 +96,13 @@ jobs:
           if [ -n "${{ inputs.env-vars }}" ]; then
             echo "${{ inputs.env-vars }}" >> "$GITHUB_ENV"
           fi
-          if [ -n "${{ secrets.env-vars }}" ]; then
-            echo "${{ secrets.env-vars }}" >> "$GITHUB_ENV"
-          fi
+          echo "${{ secrets.env-vars }}" | while read -r line || [ -n "$line" ]; do
+            [[ -z "$line" || "$line" =~ ^# ]] && continue
+            key=$(echo "$line" | cut -d'=' -f1)
+            val=$(echo "$line" | cut -d'=' -f2-)
+            echo "::add-mask::$val"
+            echo "$key=$val" >> $GITHUB_ENV
+          done
 
       - name: Setup Gradle
         uses: tozydev/gh-actions/setup-gradle@main
