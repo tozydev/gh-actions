@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/tozydev/gh-actions/compare/v1.2.0...v1.2.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **shared-gradle-build:** secret exposed ([c8d085f](https://github.com/tozydev/gh-actions/commit/c8d085fb9e3eb222767440c392c7fa493088f53d))
+
 ## [1.2.0](https://github.com/tozydev/gh-actions/compare/v1.1.1...v1.2.0) (2026-08-02)
 
 
