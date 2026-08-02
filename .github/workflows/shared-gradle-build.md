@@ -62,13 +62,15 @@ jobs:
 | `kotlin-js-cache-dependency-path` | Glob pattern or path to Kotlin/JS lockfiles for cache hashing.                 | `false`  | `.kotlin-locks/**/package-lock.json`  |
 | `upload-artifacts-path`           | Newline-separated paths or glob patterns of artifacts to upload.               | `false`  | `""`                                  |
 | `upload-artifacts-name`           | Name for the uploaded artifact.                                                | `false`  | `build-artifacts`                     |
+| `env-vars`                        | Multiline `KEY=VALUE` environment variables string.                            | `false`  | `""`                                  |
 
 ## 🔑 Secrets
 
-| Secret            | Description                                              | Required |
-|-------------------|----------------------------------------------------------|----------|
-| `github-token`    | GitHub token for setup-java and checkout authentication. | `false`  |
-| `keystore-base64` | Base64-encoded keystore secret string.                   | `false`  |
+| Secret            | Description                                                | Required |
+|-------------------|------------------------------------------------------------|----------|
+| `github-token`    | GitHub token for setup-java and checkout authentication.   | `false`  |
+| `keystore-base64` | Base64-encoded keystore secret string.                     | `false`  |
+| `env-vars`        | Multiline `KEY=VALUE` secret environment variables string. | `false`  |
 
 ## 📄 License
 

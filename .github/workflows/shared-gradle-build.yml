@@ -57,12 +57,21 @@ on:
         type: string
         default: build-artifacts
 
+      env-vars:
+        description: Multiline KEY=VALUE environment variables string.
+        required: false
+        type: string
+        default: ""
+
     secrets:
       github-token:
         description: GitHub token for authentication.
         required: false
       keystore-base64:
         description: Base64-encoded keystore secret string.
+        required: false
+      env-vars:
+        description: Multiline KEY=VALUE secret environment variables string.
         required: false
 
 jobs:
@@ -71,6 +80,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      - name: Export Custom Environment Variables
+        if: inputs.env-vars != '' || secrets.env-vars != ''
+        shell: bash
+        # language=bash
+        run: |
+          if [ -n "${{ inputs.env-vars }}" ]; then
+            echo "${{ inputs.env-vars }}" >> "$GITHUB_ENV"
+          fi
+          if [ -n "${{ secrets.env-vars }}" ]; then
+            echo "${{ secrets.env-vars }}" >> "$GITHUB_ENV"
+          fi
 
       - name: Setup Gradle
         uses: tozydev/gh-actions/setup-gradle@main
