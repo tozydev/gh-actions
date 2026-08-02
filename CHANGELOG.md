@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tozydev/gh-actions/compare/v1.0.1...v1.1.0) (2026-08-02)
+
+
+### Features
+
+* add env-vars input and secret to shared-gradle-build workflow ([79d7415](https://github.com/tozydev/gh-actions/commit/79d7415f852770be0dbc0a2cac96b22fbb8a76ba))
+
 ## [1.0.1](https://github.com/tozydev/gh-actions/compare/v1.0.0...v1.0.1) (2026-08-01)
 
 
