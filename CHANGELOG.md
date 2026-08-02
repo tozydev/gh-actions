@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/tozydev/gh-actions/compare/v1.1.1...v1.2.0) (2026-08-02)
+
+
+### Features
+
+* **shared-gradle-build:** add checkout-ref input ([6dc0951](https://github.com/tozydev/gh-actions/commit/6dc09515d591d42a50a4f81f0026ac976d7af6cc))
+
 ## [1.1.1](https://github.com/tozydev/gh-actions/compare/v1.1.0...v1.1.1) (2026-08-02)
 
 
