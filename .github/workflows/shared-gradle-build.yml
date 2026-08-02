@@ -3,6 +3,12 @@ name: Shared Gradle Build
 on:
   workflow_call:
     inputs:
+      checkout-ref:
+        description: The branch, tag, or SHA to checkout.
+        required: false
+        type: string
+        default: ""
+
       java-version:
         description: Java JDK version to setup.
         required: false
@@ -80,6 +86,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.checkout-ref }}
 
       - name: Export Custom Environment Variables
         shell: bash

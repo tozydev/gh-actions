@@ -63,6 +63,7 @@ jobs:
 | `upload-artifacts-path`           | Newline-separated paths or glob patterns of artifacts to upload.               | `false`  | `""`                                  |
 | `upload-artifacts-name`           | Name for the uploaded artifact.                                                | `false`  | `build-artifacts`                     |
 | `env-vars`                        | Multiline `KEY=VALUE` environment variables string.                            | `false`  | `""`                                  |
+| `checkout-ref`                    | The branch, tag, or SHA to checkout.                                           | `false`  | `""`                                  |
 
 ## 🔑 Secrets
 
