@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tozydev/gh-actions/compare/v1.1.0...v1.1.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **shared-gradle-build:** remove condition for export custom env ([24b4766](https://github.com/tozydev/gh-actions/commit/24b4766c1baffa4d458c76f9c2064869192da458))
+
 ## [1.1.0](https://github.com/tozydev/gh-actions/compare/v1.0.1...v1.1.0) (2026-08-02)
 
 
