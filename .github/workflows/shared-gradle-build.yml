@@ -105,7 +105,7 @@ jobs:
           done
 
       - name: Setup Gradle
-        uses: tozydev/gh-actions/setup-gradle@main
+        uses: tozydev/gh-actions/setup-gradle@v1
         with:
           java-version: ${{ inputs.java-version }}
           java-distribution: ${{ inputs.java-distribution }}
