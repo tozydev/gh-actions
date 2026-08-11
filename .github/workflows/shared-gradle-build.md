@@ -10,6 +10,8 @@ uploads artifacts.
   Gradle with build caching.
 - **Flexible Execution**: Accepts `gradle-args` (e.g. `build --stacktrace`) or a custom `build-script`. If
   `build-script` is provided, it executes the custom script instead of `./gradlew <gradle-args>`.
+- **Monorepo Support**: Runs the build from a subdirectory via the `working-directory` input (e.g. for multi-module
+  projects checked out at the workspace root).
 - **Keystore Decoding**: Supports base64 keystore decoding via secrets.
 - **Kotlin/JS Caching**: Supports Yarn/NPM dependency caching for Kotlin/JS projects.
 - **Artifact Uploading**: Uploads build artifacts using when `upload-artifacts-path` is specified.
@@ -49,21 +51,33 @@ jobs:
         ./gradlew check --continue
 ```
 
+Building a Gradle project from a subdirectory (monorepo):
+
+```yaml
+jobs:
+  build:
+    uses: tozydev/gh-actions/.github/workflows/shared-gradle-build.yml@v1
+    with:
+      working-directory: 'apps/android'
+      upload-artifacts-path: 'apps/android/build/outputs/apk/release/*.apk'
+```
+
 ## 📥 Inputs
 
-| Input                             | Description                                                                    | Required | Default                               |
-|-----------------------------------|--------------------------------------------------------------------------------|----------|---------------------------------------|
-| `java-version`                    | Java JDK version to setup.                                                     | `false`  | `25`                                  |
-| `java-distribution`               | Java JDK distribution vendor.                                                  | `false`  | `jetbrains`                           |
-| `gradle-args`                     | Gradle task(s) and CLI arguments to execute.                                   | `false`  | `build`                               |
-| `build-script`                    | Custom shell script to run instead of `./gradlew <gradle-args>`.               | `false`  | `""`                                  |
-| `keystore-path`                   | Output path to save the decoded keystore file.                                 | `false`  | `${{ runner.temp }}/release.keystore` |
-| `kotlin-js-cache`                 | Enables Kotlin/JS dependency caching (`'yarn'`, `'npm'`, or empty to disable). | `false`  | `""`                                  |
-| `kotlin-js-cache-dependency-path` | Glob pattern or path to Kotlin/JS lockfiles for cache hashing.                 | `false`  | `.kotlin-locks/**/package-lock.json`  |
-| `upload-artifacts-path`           | Newline-separated paths or glob patterns of artifacts to upload.               | `false`  | `""`                                  |
-| `upload-artifacts-name`           | Name for the uploaded artifact.                                                | `false`  | `build-artifacts`                     |
-| `env-vars`                        | Multiline `KEY=VALUE` environment variables string for build step.             | `false`  | `""`                                  |
-| `checkout-ref`                    | The branch, tag, or SHA to checkout.                                           | `false`  | `""`                                  |
+| Input                             | Description                                                                                       | Required | Default                               |
+|-----------------------------------|---------------------------------------------------------------------------------------------------|----------|---------------------------------------|
+| `java-version`                    | Java JDK version to setup.                                                                        | `false`  | `25`                                  |
+| `java-distribution`               | Java JDK distribution vendor.                                                                     | `false`  | `jetbrains`                           |
+| `working-directory`               | Working directory relative to the workspace root where the Gradle project is.                     | `false`  | `""`                                  |
+| `gradle-args`                     | Gradle task(s) and CLI arguments to execute.                                                      | `false`  | `build`                               |
+| `build-script`                    | Custom shell script to run instead of `./gradlew <gradle-args>`.                                  | `false`  | `""`                                  |
+| `keystore-path`                   | Output path to save the decoded keystore file.                                                    | `false`  | `${{ runner.temp }}/release.keystore` |
+| `kotlin-js-cache`                 | Enables Kotlin/JS dependency caching (`'yarn'`, `'npm'`, or empty to disable).                    | `false`  | `""`                                  |
+| `kotlin-js-cache-dependency-path` | Glob pattern or path to Kotlin/JS lockfiles for cache hashing.                                    | `false`  | `.kotlin-locks/**/package-lock.json`  |
+| `upload-artifacts-path`           | Newline-separated paths or glob patterns of artifacts to upload (relative to the workspace root). | `false`  | `""`                                  |
+| `upload-artifacts-name`           | Name for the uploaded artifact.                                                                   | `false`  | `build-artifacts`                     |
+| `env-vars`                        | Multiline `KEY=VALUE` environment variables string for build step.                                | `false`  | `""`                                  |
+| `checkout-ref`                    | The branch, tag, or SHA to checkout.                                                              | `false`  | `""`                                  |
 
 ## 🔑 Secrets
 

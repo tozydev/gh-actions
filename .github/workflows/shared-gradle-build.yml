@@ -21,6 +21,12 @@ on:
         type: string
         default: jetbrains
 
+      working-directory:
+        description: Working directory relative to the workspace root where the Gradle project resides.
+        required: false
+        type: string
+        default: ""
+
       gradle-args:
         description: Gradle task(s) and CLI arguments to execute.
         required: false
@@ -114,6 +120,7 @@ jobs:
         with:
           java-version: ${{ inputs.java-version }}
           java-distribution: ${{ inputs.java-distribution }}
+          working-directory: ${{ inputs.working-directory }}
           github-token: ${{ secrets.github-token || github.token }}
           keystore-base64: ${{ secrets.keystore-base64 }}
           keystore-path: ${{ inputs.keystore-path || format('{0}/release.keystore', runner.temp) }}
@@ -123,6 +130,7 @@ jobs:
       - name: Run Gradle Build Script
         if: inputs.build-script != ''
         shell: bash
+        working-directory: ${{ inputs.working-directory }}
         # language=bash
         run: |
           if [ -f "${{ runner.temp }}/.build.env" ]; then
@@ -135,6 +143,7 @@ jobs:
       - name: Run Gradle Build Tasks
         if: inputs.build-script == ''
         shell: bash
+        working-directory: ${{ inputs.working-directory }}
         # language=bash
         run: |
           if [ -f "${{ runner.temp }}/.build.env" ]; then

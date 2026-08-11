@@ -12,6 +12,11 @@ inputs:
     required: false
     default: jetbrains
 
+  working-directory:
+    description: Working directory relative to the workspace root where the Gradle project resides.
+    required: false
+    default: ""
+
   github-token:
     description: GitHub Token for authentication (e.g. actions/setup-java).
     required: false
@@ -55,6 +60,7 @@ runs:
       id: pkg-mgr-cache
       if: inputs.kotlin-js-cache != ''
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       # language=bash
       run: |
         cache_type="${{ inputs.kotlin-js-cache }}"
@@ -72,13 +78,14 @@ runs:
       uses: actions/cache@v6
       with:
         path: ${{ steps.pkg-mgr-cache.outputs.dir }}
-        key: ${{ runner.os }}-kotlin-js-${{ inputs.kotlin-js-cache }}-${{ hashFiles(inputs.kotlin-js-cache-dependency-path) }}
+        key: ${{ runner.os }}-kotlin-js-${{ inputs.kotlin-js-cache }}-${{ inputs.working-directory != '' && hashFiles(format('{0}/{1}', inputs.working-directory, inputs.kotlin-js-cache-dependency-path)) || hashFiles(inputs.kotlin-js-cache-dependency-path) }}
         restore-keys: |
           ${{ runner.os }}-kotlin-js-${{ inputs.kotlin-js-cache }}-
           ${{ runner.os }}-kotlin-js-
 
     - name: Grant gradlew execute permission
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       # language=bash
       run: |
         if [ -f "./gradlew" ]; then
