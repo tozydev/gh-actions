@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/tozydev/gh-actions/compare/v1.2.2...v1.3.0) (2026-08-11)
+
+
+### Features
+
+* add working-directory input for setup-gradle and shared-gradle-build ([e5d0bc4](https://github.com/tozydev/gh-actions/commit/e5d0bc4c7c6c7329242a76e2edb5a1a2024f37f9))
+
 ## [1.2.2](https://github.com/tozydev/gh-actions/compare/v1.2.1...v1.2.2) (2026-08-02)
 
 
