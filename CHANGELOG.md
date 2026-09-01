@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/tozydev/gh-actions/compare/v1.3.0...v1.3.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **deps:** update actions/setup-java action to v6 ([#14](https://github.com/tozydev/gh-actions/issues/14)) ([3f3cf44](https://github.com/tozydev/gh-actions/commit/3f3cf44feceb4fdf29ab54ffb363fd97fff10396))
+
 ## [1.3.0](https://github.com/tozydev/gh-actions/compare/v1.2.2...v1.3.0) (2026-08-11)
 
 
