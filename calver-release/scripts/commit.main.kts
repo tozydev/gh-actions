@@ -11,7 +11,7 @@
  * - `commit-sha`: New commited SHA
  */
 @file:Suppress("KotlinPrintToLogpoint")
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
